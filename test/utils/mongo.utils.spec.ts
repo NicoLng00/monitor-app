@@ -22,6 +22,12 @@ describe('MongoConnector', () => {
 
   it('should throw an error if not connected', () => {
     MongoConnector.disconnect(); // Disconnetti per testare l'errore
-    expect(() => MongoConnector.getDatabase()).toThrowError('Database not initialized. Call connect first.');
+    try {
+      MongoConnector.getDatabase();
+      // Se non viene lanciato un errore, fallisci il test
+      fail('Expected an error to be thrown');
+    } catch (error) {
+      expect(error.message).toBe('Database not initialized. Call connect first.');
+    }
   });
 }); 
