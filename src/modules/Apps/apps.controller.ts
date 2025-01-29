@@ -46,6 +46,18 @@ export class AppsController {
   async deleteApp(@Param('id') id: string) {
     return this.appsService.deleteApp(id);
   }
+
+  @Get('monitor/:id')
+  @ApiResponse({ status: 200, description: 'Monitor the app by ID.' })
+  async monitorApp(@Param('id') id: string) {
+    return this.appsService.monitorApp(id);
+  }
+
+  @Get('logs')
+  @ApiResponse({ status: 200, description: 'Get database operation logs.' })
+  async getLogs() {
+    return this.appsService.getLogs();
+  }
 }
 
   

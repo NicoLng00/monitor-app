@@ -6,6 +6,8 @@ import { buildAgGridPayload } from 'src/utils/AgGrid/ag-grid-payload.util';
 import { buildAggregationPipeline } from 'src/utils/AgGrid/ag-grid-query.util';
 import { TenantContext } from 'src/utils/tenant.util';
 import { MongoConnector } from '../../utils/mongo.utils';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class AppsService {
@@ -48,5 +50,40 @@ export class AppsService {
             throw new NotFoundException(`App with ID ${id} not found`);
         }
         return { message: `App with ID ${id} deleted successfully` };
+    }
+
+    async monitorApp(id: string) {
+        const app = await this.appModel.findById(id);
+        if (!app) {
+            throw new NotFoundException(`App with ID ${id} not found`);
+        }
+
+        await MongoConnector.connect({
+            uri: app.mongodb.uri,
+            dbName: app.mongodb.db_name,
+            authSource: "admin",
+        });
+
+        this.logConnection(app.app_name);
+
+        return { message: `Monitoring started for app: ${app.app_name}` };
+    }
+
+    private logConnection(appName: string) {
+        const logDir = path.join(__dirname, '../../logs');
+        const logFilePath = path.join(logDir, `connection-${appName}.log`);
+
+        if (!fs.existsSync(logDir)) {
+            fs.mkdirSync(logDir, { recursive: true });
+        }
+
+        const logMessage = `${new Date().toISOString()} - Connected to database for app: ${appName}\n`;
+        fs.appendFileSync(logFilePath, logMessage, 'utf8');
+    }
+
+    async getLogs() {
+        const db = MongoConnector.getDatabase();
+        const logs = await db.collection('system.profile').find().toArray();
+        return logs;
     }
 }
