@@ -8,10 +8,7 @@ describe('MongoQueryWatcher', () => {
 
   beforeAll(async () => {
     const uri = process.env.MONGO_URI || 'mongodb://localhost:27017';
-    await MongoConnector.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await MongoConnector.connect(uri);
     logger = QueryLogger.getInstance();
     watcher = new MongoQueryWatcher(MongoConnector.getDatabase(), logger, {
       pollInterval: 1500,

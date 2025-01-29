@@ -1,45 +1,19 @@
 // src/main.ts
-import { MongoConnector } from './utils/mongo.utils';
-import { QueryLogger } from './utils/logger.utils';
-import { MongoQueryWatcher } from './utils/monitoring.utils';
-import { config } from './config';
+import * as dotenv from 'dotenv';
+import { MonitoringModule } from './utils/monitoring.module';
+import { AppModule } from './app.module';
+import { NestFactory } from '@nestjs/core';
+
+dotenv.config();
 
 async function bootstrap() {
-  try {
-    // 1. Inizializza la connessione al database
-    await MongoConnector.connect(config.mongo.uri, {
-      appName: 'MongoDB Query Monitor',
-      maxPoolSize: 5,
-      minPoolSize: 1
-    });
+  const app = await NestFactory.create(AppModule);
 
-    // 2. Inizializza i componenti
-    const logger = QueryLogger.getInstance();
-    const watcher = new MongoQueryWatcher(
-      MongoConnector.getDatabase(),
-      logger,
-      {
-        pollInterval: 1500,
-        minDuration: 100
-      }
-    );
+  const monitoringModule = new MonitoringModule();
+  await monitoringModule.initialize();
 
-    // 3. Avvia il monitoraggio
-    watcher.startMonitoring();
-    console.log('Monitoring system initialized');
-
-    // 4. Gestione shutdown pulito
-    process.on('SIGINT', async () => {
-      console.log('\nStopping monitoring...');
-      watcher.stopMonitoring();
-      await MongoConnector.disconnect();
-      process.exit(0);
-    });
-
-  } catch (error) {
-    console.error('Failed to initialize monitoring:', error);
-    process.exit(1);
-  }
+  await app.listen(5000);
+  console.log('Application is running on: http://localhost:5000');
 }
 
 bootstrap();

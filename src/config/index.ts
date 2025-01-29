@@ -1,11 +1,7 @@
 export const config = {
     mongo: {
-      uri: process.env.MONGO_URI || 'mongodb://localhost:27017',
-      dbName: process.env.MONGO_DB || 'monitoring',
-      options: {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-      }
+      uri: process.env.MONGO_URI,
+      dbName: process.env.MONGO_DB,
     },
     monitoring: {
       pollInterval: 2000,

@@ -4,10 +4,7 @@ describe('MongoConnector', () => {
   const uri = process.env.MONGO_URI || 'mongodb://localhost:27017';
 
   beforeAll(async () => {
-    await MongoConnector.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await MongoConnector.connect(uri);
   });
 
   afterAll(async () => {
