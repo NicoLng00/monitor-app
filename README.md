@@ -26,6 +26,22 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Dependencies
+
+This project requires the following dependencies:
+
+- **@nestjs/common**: A framework for building efficient, scalable Node.js server-side applications.
+- **@nestjs/core**: The core module of the NestJS framework.
+- **@nestjs/platform-express**: The Express platform adapter for NestJS.
+- **mongodb**: The official MongoDB driver for Node.js.
+- **winston**: A versatile logging library for Node.js.
+- **rxjs**: A library for reactive programming using Observables.
+- **mongoose**: An ODM (Object Data Modeling) library for MongoDB and Node.js.
+
+## Project Functionality
+
+This project is a MongoDB query monitoring application built with NestJS. It connects to a MongoDB database, logs queries in real-time, and provides insights into database operations such as queries, inserts, updates, and deletions. The application is designed to be efficient and scalable, making it suitable for production environments.
+
 ## Project setup
 
 ```bash
