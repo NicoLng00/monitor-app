@@ -1,11 +1,15 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from "@nestjs/mongoose";
 
 @Module({
-  imports: [ConfigModule.forRoot()],
-  controllers: [AppController],
-  providers: [AppService],
+	imports: [
+		MongooseModule.forRoot("mongodb://admin:AezPassword131%C2%A3A!@192.168.10.130:27017/gift_cards_test", {
+			connectionName: "gift_cards",
+			user: "admin",
+			pass: "AezPassword131£A!",
+			authSource: "admin",
+			autoIndex: true,
+		})
+	],
 })
 export class AppModule {}

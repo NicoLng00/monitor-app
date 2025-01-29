@@ -10,14 +10,25 @@ export class MonitoringModule {
 
   async initialize() {
     try {
+      const uri = process.env.MONGO_URI;
+      const dbName = process.env.MONGO_DB;
 
-      const connectionString = process.env.MONGO_URI;
-      
-      if (!connectionString) {
-        throw new Error('MongoDB URI undefined');
+      if (!uri) {
+        throw new Error('MongoDB URI is undefined');
       }
 
-      await MongoConnector.connect(connectionString);
+      if (!dbName) {
+        throw new Error('MongoDB database name is undefined');
+      }
+
+      const connection = {
+        uri: uri,
+        dbName: dbName,
+        authSource: "admin",
+        autoIndex: true,
+      };
+
+      await MongoConnector.connect(connection);
 
       this.logger = QueryLogger.getInstance();
       this.watcher = new MongoQueryWatcher(
