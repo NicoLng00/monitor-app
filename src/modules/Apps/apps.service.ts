@@ -8,6 +8,7 @@ import { TenantContext } from 'src/utils/tenant.util';
 import { MongoConnector } from '../../utils/mongo.utils';
 import * as fs from 'fs';
 import * as path from 'path';
+import { ObjectIdUtil } from 'src/utils/object-id.util';
 
 @Injectable()
 export class AppsService {
@@ -30,6 +31,11 @@ export class AppsService {
     }
 
     async createApp(appData: App) {
+        // Validazione dei dati in ingresso
+        if (!appData.mongodb || !appData.mongodb.uri || !appData.mongodb.db_name) {
+            throw new Error('MongoDB connection details are missing.');
+        }
+
         // Salva l'app nel database
         const newApp = new this.appModel(appData);
         await newApp.save();
@@ -58,6 +64,7 @@ export class AppsService {
             throw new NotFoundException(`App with ID ${id} not found`);
         }
 
+        console.log(app);
         await MongoConnector.connect({
             uri: app.mongodb.uri,
             dbName: app.mongodb.db_name,
