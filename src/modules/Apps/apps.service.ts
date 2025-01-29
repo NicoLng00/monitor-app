@@ -64,7 +64,7 @@ export class AppsService {
             throw new NotFoundException(`App with ID ${id} not found`);
         }
 
-        console.log(app);
+        console.log("App successfully found.");
         await MongoConnector.connect({
             uri: app.mongodb.uri,
             dbName: app.mongodb.db_name,
