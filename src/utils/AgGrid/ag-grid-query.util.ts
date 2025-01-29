@@ -73,36 +73,7 @@ export function buildAggregationPipeline(
         pipeline.push({ $sort: { [options.defaultSortField]: 1 } });
     }
 
-    // Calcolo del current_balance
-    pipeline.push({
-        $addFields: {
-            current_balance: {
-                $subtract: [
-                    "$initial_amount",
-                    { $sum: { $map: { input: "$shards", as: "shard", in: "$$shard.amount" } } }
-                ]
-            }
-        }
-    });
-
-    // Gestione della paginazione e calcoli aggregati
-    const skip = request.startRow;
-    const limit = request.endRow - request.startRow;
-    pipeline.push({
-        $facet: {
-            data: [
-                { $skip: skip },
-                { $limit: limit }
-            ],
-            total_count: [
-                { $count: "count" }
-            ],
-            total_amount: [
-                { $group: { _id: null, total_amount: { $sum: "$initial_amount" } } }
-            ]
-        }
-    });
-
+    
     // Log del pipeline di aggregazione
     logToFile(`Aggregation Pipeline: ${JSON.stringify(pipeline, null, 2)}`);
 
