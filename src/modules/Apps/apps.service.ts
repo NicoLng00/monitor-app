@@ -31,17 +31,22 @@ export class AppsService {
         // Salva l'app nel database
         const newApp = new this.appModel(appData);
         await newApp.save();
+        return newApp; // Restituisci l'app creata
+    }
 
-        // Connetti al database specificato
-        await MongoConnector.connect({
-            uri: appData.mongodb.uri,
-            dbName: appData.mongodb.db_name,
-            authSource: "admin",
-        });
+    async updateApp(id: string, appData: App) {
+        const updatedApp = await this.appModel.findByIdAndUpdate(id, appData, { new: true });
+        if (!updatedApp) {
+            throw new NotFoundException(`App with ID ${id} not found`);
+        }
+        return updatedApp;
+    }
 
-        // Qui puoi implementare la logica per iniziare a monitorare le query
-        // Ad esempio, avviare un watcher per il polling delle query
-
-        return newApp;
+    async deleteApp(id: string) {
+        const deletedApp = await this.appModel.findByIdAndDelete(id);
+        if (!deletedApp) {
+            throw new NotFoundException(`App with ID ${id} not found`);
+        }
+        return { message: `App with ID ${id} deleted successfully` };
     }
 }

@@ -34,6 +34,18 @@ export class AppsController {
   async createApp(@Body() appData: App) {
     return this.appsService.createApp(appData);
   }
+
+  @Put(':id')
+  @ApiResponse({ status: 200, description: 'Update an existing app.' })
+  async updateApp(@Param('id') id: string, @Body() appData: App) {
+    return this.appsService.updateApp(id, appData);
+  }
+
+  @Delete(':id')
+  @ApiResponse({ status: 200, description: 'Delete an existing app.' })
+  async deleteApp(@Param('id') id: string) {
+    return this.appsService.deleteApp(id);
+  }
 }
 
   
