@@ -1,15 +1,23 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MongooseModule } from "@nestjs/mongoose";
+import { AppsModule } from './modules/Apps/apps.module';
+import { LoggingMiddleware } from './middlewares/logging.middleware';
+import { TenantMiddleware } from './middlewares/tenant.middleware';
 
 @Module({
 	imports: [
-		MongooseModule.forRoot("mongodb://admin:AezPassword131%C2%A3A!@192.168.10.130:27017/gift_cards_test", {
-			connectionName: "gift_cards",
-			user: "admin",
-			pass: "AezPassword131£A!",
-			authSource: "admin",
+		MongooseModule.forRoot("mongodb://192.168.56.56:27017/monitor_test", {
+			connectionName: "apps",
+			user: "",
+			pass: "",
+			authSource: "",
 			autoIndex: true,
-		})
+		}),
+		AppsModule,
 	],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+	configure(consumer: MiddlewareConsumer) {
+		consumer.apply(LoggingMiddleware, TenantMiddleware).forRoutes("*");
+	}
+}
